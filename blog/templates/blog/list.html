@@ -1,0 +1,27 @@
+{% extends '../blog.html' %}
+
+{% block title %}Post List {% endblock title %}
+
+
+{% block content %}
+    <div class="row">
+        <h2>Blog List</h2>
+        <hr>
+        {% for post in posts %}
+        
+        <div class="col-md-12">
+           <h3>
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+            </h3>
+            <p>Publish date: {{ post.publish }} By <a href="#">{{ post.author }}</a></p>
+            <article>
+                {{ post.body | truncatechars:60 | linebreaks}}
+            </article>
+        </div>
+        
+        {% endfor %}
+        
+        {% comment %} {% include '../partial/pagination.html' with page=posts %} {% endcomment %}
+        {% include '../partial/pagination.html' with page=page_obj %}
+    </div>
+{% endblock content %}

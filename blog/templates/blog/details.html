@@ -1,0 +1,14 @@
+{% extends '../blog.html' %}
+
+{% block title %} {{ post.title }} {% endblock title %}
+
+{% block content %}
+
+<h3>{{ post.title }}</h3>
+
+
+<article>
+{{ post.body }}
+</article>
+
+{% endblock content %}

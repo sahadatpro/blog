@@ -1,6 +1,7 @@
 from django.db import models
 from account.models import User
 from django.utils import timezone
+from django.urls import reverse
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
@@ -31,3 +32,10 @@ class Post(models.Model):
 
     def __str__(self) -> str:
         return self.title
+    
+    def get_absolute_url(self):
+        return reverse("blog:post_details", args= [self.publish.year, 
+                                                   self.publish.month,
+                                                   self.publish.day,
+                                                   self.slug])
+    
