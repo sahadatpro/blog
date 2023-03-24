@@ -1,5 +1,5 @@
 from django.contrib import admin
-from blog.models import Post
+from blog.models import Post, Comment
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ['title', 'publish', 'author', 'status']
@@ -11,3 +11,11 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ['status', 'publish']
 
 admin.site.register(Post, PostAdmin) # Register
+
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['name', 'email', 'post', 'created', 'active']
+    search_fields =  ['name', 'email', 'body']
+    list_filter = ['active', 'created', 'updated']
+
+admin.site.register(Comment, CommentAdmin)
