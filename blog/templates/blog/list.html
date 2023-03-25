@@ -1,12 +1,15 @@
-{% extends '../blog.html' %}
-
+{% extends 'blog.html' %}
+{% load static %}
 {% block title %}Post List {% endblock title %}
 
 
 {% block content %}
     <div class="row">
-        <h2>Blog List</h2>
+        {% if tag %}
+        <h4>Posts tagged with "{{ tag.name }}"</h4>
         <hr>
+        {% endif %}
+
         {% for post in posts %}
         
         <div class="col-md-12">
@@ -21,7 +24,7 @@
         
         {% endfor %}
         
-        {% comment %} {% include '../partial/pagination.html' with page=posts %} {% endcomment %}
-        {% include '../partial/pagination.html' with page=page_obj %}
+        {% include '../partial/pagination.html' with page=posts %}
+        {% comment %} {% include '../partial/pagination.html' with page=page_obj %} {% endcomment %}
     </div>
 {% endblock content %}

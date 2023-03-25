@@ -1,4 +1,4 @@
-{% extends '../blog.html' %}
+{% extends 'blog.html' %}
 
 {% block title %} {{ post.title }} {% endblock title %}
 
@@ -14,12 +14,33 @@
 <hr>
 {% with post.tags.all as all_tags %}
     {% if all_tags %}
-    <p>Tags: {{ all_tags | join:", " }} </p>
+    <p>Tags: 
+    {% for tag in all_tags %}
+    <a href="{% url 'blog:posts_list_by_tag' tag.slug %}" class="text-decoration-none">{{ tag.name }}</a>
+    {% if not forloop.lst %}, {% endif %}
+    {% endfor %}    
+    
+    </p>
     {% else %}
     <p>Not tags selected. </p>
     {% endif %}    
 {% endwith %}
 
+<hr>
+<ul class="list-group">
+<li class="list-group-item active">Related Post</li>
+{% if similar_posts %}
+
+    {% for r_post in similar_posts %}
+    <li class="list-group-item">
+        <a href="{{ r_post.get_absolute_url }}" class="text-decoration-none">{{ r_post.title }}</a>
+    </li>
+    {% endfor %}
+
+{% else %}
+<li class="list-group-item">There are no related posts. </li>
+{% endif %}
+</ul>
 <hr>
 {% with comments.count as  total_comments %}
 <h2>{{ total_comments }} Comment{{ total_comments | pluralize}} </h2>
@@ -42,11 +63,11 @@
 
 {% else %}
 <h3>Add new comment </h2>
-<form method="post" action="">
+<form method="post" action="" class="mb-4">
     {% csrf_token %}
     {{ comment_form.as_p }}
 
-    <button type="submit" class="btn btn-default">Add Comment </button>
+    <button type="submit" class="btn btn-primary">Add Comment </button>
 </form>
 {% endif %}
 

@@ -4,6 +4,8 @@ from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.views.generic import ListView
 from blog.forms import CommentForm
+from taggit.models import Tag
+from django.db.models import Count
 
 
 """
@@ -11,11 +13,20 @@ functional views
 """
 
 
-def index(request):
+def index(request, tag_slug=None):
     posts = Post.published.all()
-    paginator = Paginator(posts, 3)
+   
     page = request.GET.get('page')
 
+    tag = None
+
+    # Tags filter
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        posts = posts.filter(tags__in=[tag])
+
+    paginator = Paginator(posts, 3) #Paginate posts
+    
     try:
         posts = paginator.page(page)
     except PageNotAnInteger:
@@ -27,7 +38,8 @@ def index(request):
 
     context = {
         'page': page,
-        'posts': posts
+        'posts': posts,
+        'tag': tag
     }
     return render(request, 'blog/list.html', context)
 
@@ -67,9 +79,14 @@ def post_details(request, year, month, day, post):
     else:
         comment_form = CommentForm()
 
+    tag_ids = post.tags.values_list('id', flat=True)
+    similar_posts = Post.published.filter(tags__in=tag_ids).exclude(id=post.id)
+    similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags', '-publish')[:4]
+   
     return render(request, 'blog/details.html', {
         'post': post,
         'comments': comments,
         'new_comment': new_comment,
-        'comment_form': comment_form
+        'comment_form': comment_form,
+        'similar_posts': similar_posts
     })
