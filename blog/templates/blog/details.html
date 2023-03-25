@@ -12,6 +12,15 @@
 </article>
 
 <hr>
+{% with post.tags.all as all_tags %}
+    {% if all_tags %}
+    <p>Tags: {{ all_tags | join:", " }} </p>
+    {% else %}
+    <p>Not tags selected. </p>
+    {% endif %}    
+{% endwith %}
+
+<hr>
 {% with comments.count as  total_comments %}
 <h2>{{ total_comments }} Comment{{ total_comments | pluralize}} </h2>
 {% endwith %}
